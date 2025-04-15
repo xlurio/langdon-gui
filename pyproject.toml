@@ -1,0 +1,26 @@
+[project]
+name = "langdon-gui"
+version = "0.1.0"
+description = "GUI to analyze the data collected by langdon"
+authors = [
+    {name = "Lucas Calegario",email = "lucas.c.calegario@outlook.com"}
+]
+license = {text = "LICENSE"}
+readme = "README.md"
+requires-python = ">=3.12"
+dependencies = [
+    "langdon-core @ git+https://github.com/xlurio/langdon-core.git",
+    "flask (>=3.1.0,<3.2.0)",
+    "gunicorn (>=23.0.0,<24.0.0)"
+]
+
+[tool.poetry]
+packages = [{include = "langdon_gui", from = "src"}]
+
+
+[tool.poetry.group.dev.dependencies]
+ruff = "^0.11.5"
+
+[build-system]
+requires = ["poetry-core>=2.0.0,<3.0.0"]
+build-backend = "poetry.core.masonry.api"

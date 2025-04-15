@@ -1,0 +1,9 @@
+FROM python:3.13-alpine
+
+COPY . /app
+WORKDIR /app
+RUN pip install poetry
+RUN poetry config virtualenvs.create false
+RUN poetry install --no-interaction --no-ansi
+
+CMD ["gunicorn", "--bind", "0.0.0.0:5000", "--access-logfile", "/dev/stdout", "--error-logfile", "/dev/stderr", "langdon_gui.app:app"]
