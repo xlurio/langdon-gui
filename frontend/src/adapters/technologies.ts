@@ -24,34 +24,6 @@ export interface TechnologyResponse {
   vulnerabilities: Vulnerability[];
 }
 
-interface GetTechnologiesParams {
-  page?: number;
-}
-
-export interface TechnologiesResult {
-  id: number;
-  name: string;
-  version: string;
-}
-
-export interface TechnologiesResponse {
-  count: number;
-  next: number | null;
-  results: TechnologiesResult[];
-}
-
-export async function getTechnologies({
-  page,
-}: GetTechnologiesParams): Promise<TechnologiesResponse> {
-  const _cleanedPage = page ? page : 0;
-
-  return {
-    count: 100,
-    next: null,
-    results: [],
-  };
-}
-
 export async function getTechnologyById({
   id,
 }: GetTechnologyByIdParams): Promise<TechnologyResponse> {

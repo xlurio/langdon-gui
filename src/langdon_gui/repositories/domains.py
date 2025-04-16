@@ -3,7 +3,7 @@ from __future__ import annotations
 from typing import TYPE_CHECKING
 
 from langdon_core import models as langdon_models
-from sqlalchemy import func, sql
+from sqlalchemy import func, sql, orm
 
 if TYPE_CHECKING:
     from sqlalchemy.engine import ScalarResult
@@ -39,6 +39,21 @@ def count_promissing_domains(*, session: Session) -> int:
     )
     domains_count = session.execute(domains_query).scalar_one()
     return domains_count
+
+
+def get_by_id(
+    domain_id: langdon_models.DomainId, *, session: Session
+) -> langdon_models.Domain | None:
+    domain_query = (
+        sql.select(langdon_models.Domain)
+        .where(langdon_models.Domain.id == domain_id)
+        .options(
+            orm.joinedload(langdon_models.Domain.ip_relationships),
+            orm.joinedload(langdon_models.Domain.web_directories),
+        )
+        .join(langdon_models.IpDomainRel.ip_address, isouter=True)
+    )
+    return session.execute(domain_query).unique().scalar_one()
 
 
 def list_promissing_domains(

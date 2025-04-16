@@ -1,23 +1,20 @@
 from typing import Self
 import pydantic
-from langdon_core import models as landgon_models
+from langdon_core import models as langdon_models
+
+from langdon_gui.schemas.ip_address_item import IpAddressItem
 
 
 __all__ = ("TechnologyDetail",)
 
 
-class IpAddressItem(pydantic.BaseModel):
-    id: landgon_models.IpAddressId
-    address: str
-
-
 class UsedPortItem(pydantic.BaseModel):
-    id: landgon_models.UsedPortId
+    id: langdon_models.UsedPortId
     port: int
     ip_address: IpAddressItem
 
     @classmethod
-    def from_used_port_model(cls, used_port: landgon_models.PortTechRel) -> Self:
+    def from_used_port_model(cls, used_port: langdon_models.PortTechRel) -> Self:
         return cls(
             id=used_port.id,
             port=used_port.port.port,
@@ -29,12 +26,12 @@ class UsedPortItem(pydantic.BaseModel):
 
 
 class DomainItem(pydantic.BaseModel):
-    id: landgon_models.DomainId
+    id: langdon_models.DomainId
     name: str
 
 
 class WebDirectoryItem(pydantic.BaseModel):
-    id: landgon_models.WebDirectoryId
+    id: langdon_models.WebDirectoryId
     path: str
     ip_address: IpAddressItem | None
     domain: DomainItem | None
@@ -42,7 +39,7 @@ class WebDirectoryItem(pydantic.BaseModel):
 
     @classmethod
     def from_web_directory_rel(
-        cls, web_directory_rel: landgon_models.WebDirTechRel
+        cls, web_directory_rel: langdon_models.WebDirTechRel
     ) -> Self:
         ip_address = (
             IpAddressItem(
@@ -71,12 +68,12 @@ class WebDirectoryItem(pydantic.BaseModel):
 
 
 class VulnerabilityItem(pydantic.BaseModel):
-    id: landgon_models.VulnerabilityId
+    id: langdon_models.VulnerabilityId
     name: str
 
 
 class TechnologyDetail(pydantic.BaseModel):
-    id: landgon_models.TechnologyId
+    id: langdon_models.TechnologyId
     name: str
     version: str
     used_ports: list[UsedPortItem]
@@ -84,7 +81,7 @@ class TechnologyDetail(pydantic.BaseModel):
     vulnerabilities: list[VulnerabilityItem]
 
     @classmethod
-    def from_technology_model(cls, technology: landgon_models.Technology) -> Self:
+    def from_technology_model(cls, technology: langdon_models.Technology) -> Self:
         return cls(
             id=technology.id,
             name=technology.name,
@@ -104,7 +101,7 @@ class TechnologyDetail(pydantic.BaseModel):
 class UsedPortItemFactory:
     @staticmethod
     def create_from_port_relationships(
-        port_relationships: list[landgon_models.PortTechRel],
+        port_relationships: list[langdon_models.PortTechRel],
     ) -> list[UsedPortItem]:
         return [
             UsedPortItem.from_used_port_model(port_rel)
@@ -115,7 +112,7 @@ class UsedPortItemFactory:
 class WebDirectoryItemFactory:
     @staticmethod
     def create_from_directory_relationships(
-        directory_relationships: list[landgon_models.WebDirTechRel],
+        directory_relationships: list[langdon_models.WebDirTechRel],
     ) -> list[WebDirectoryItem]:
         return [
             WebDirectoryItem.from_web_directory_rel(dir_rel)
@@ -126,7 +123,7 @@ class WebDirectoryItemFactory:
 class VulnerabilityItemFactory:
     @staticmethod
     def create_from_vulnerabilities(
-        vulnerabilities: list[landgon_models.Vulnerability],
+        vulnerabilities: list[langdon_models.Vulnerability],
     ) -> list[VulnerabilityItem]:
         return [
             VulnerabilityItem(id=vulnerability.id, name=vulnerability.name)

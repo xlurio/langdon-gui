@@ -15,6 +15,7 @@ from langdon_gui.repositories import (
     vulnerabilities,
     web_directories,
 )
+from langdon_gui.schemas.domain_detail import DomainDetail
 from langdon_gui.schemas.promising_findings_response import PromisingFindingsResponse
 from langdon_gui.schemas.technology_detail import TechnologyDetail
 from langdon_gui.services import promissing_findings_manager
@@ -51,6 +52,16 @@ def get_technology(technology_id: int):
 
         return TechnologyDetail.from_technology_model(
             technology=technology,
+        ).model_dump_json()
+
+
+@app.route("/api/domains/<int:domain_id>")
+def get_domain(domain_id: int):
+    with LangdonManager() as manager:
+        domain = domains.get_by_id(domain_id, session=manager.session)
+
+        return DomainDetail.from_domain_model(
+            domain=domain,
         ).model_dump_json()
 
 

@@ -34,9 +34,9 @@ def get_by_id(
             orm.joinedload(langdon_models.Technology.port_relationships),
             orm.subqueryload(langdon_models.Technology.web_directory_relationships),
         )
-        .join(langdon_models.PortTechRel.port)
-        .join(langdon_models.UsedPort.ip_address)
-        .join(langdon_models.WebDirTechRel.directory)
+        .join(langdon_models.PortTechRel.port, isouter=True)
+        .join(langdon_models.UsedPort.ip_address, isouter=True)
+        .join(langdon_models.WebDirTechRel.directory, isouter=True)
         .join(langdon_models.WebDirectory.domain, isouter=True)
     )
     return session.execute(technologies_query).unique().scalar_one()
