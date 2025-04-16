@@ -6,4 +6,9 @@ RUN pip install poetry
 RUN poetry config virtualenvs.create false
 RUN poetry install --no-interaction --no-ansi
 
+WORKDIR /recon
+
+RUN echo '[tool.langdon]' >> /pyproject.toml
+RUN echo 'database = /recon/langdon.db' >> /pyproject.toml
+
 CMD ["gunicorn", "--bind", "0.0.0.0:5000", "--access-logfile", "/dev/stdout", "--error-logfile", "/dev/stderr", "langdon_gui.app:app"]

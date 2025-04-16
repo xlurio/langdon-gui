@@ -27,6 +27,11 @@ export default function TechnologyDetailData({
                 </li>
               </Link>
             ))}
+            {data.used_ports.length === 0 && (
+              <li className="bg-background p-6 rounded-xl">
+                No ports found
+              </li>
+            )}
           </ul>
         </div>
         <div className="flex flex-col gap-4 w-full">
@@ -42,6 +47,11 @@ export default function TechnologyDetailData({
                 </li>
               </Link>
             ))}
+            {data.web_directories.length === 0 && (
+              <li className="bg-background p-6 rounded-xl">
+                No content found
+              </li>
+            )}
           </ul>
         </div>
         <div className="flex flex-col gap-4 w-full">
@@ -55,6 +65,11 @@ export default function TechnologyDetailData({
                 <li className="bg-background p-6 rounded-xl">{vulnerability.name}</li>
               </Link>
             ))}
+            {data.vulnerabilities.length === 0 && (
+              <li className="bg-background p-6 rounded-xl">
+                No vulnerabilities found
+              </li>
+            )}
           </ul>
         </div>
       </div>

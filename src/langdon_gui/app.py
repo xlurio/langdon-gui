@@ -16,6 +16,7 @@ from langdon_gui.repositories import (
     web_directories,
 )
 from langdon_gui.schemas.promising_findings_response import PromisingFindingsResponse
+from langdon_gui.schemas.technology_detail import TechnologyDetail
 from langdon_gui.services import promissing_findings_manager
 
 BASE_DIR = pathlib.Path(__file__).parent.parent.parent
@@ -41,6 +42,16 @@ def overview():
             "vulnerabilities": vulnerabilities.count(session=manager.session),
             "web_directories": web_directories.count(session=manager.session),
         }
+
+
+@app.route("/api/technologies/<int:technology_id>")
+def get_technology(technology_id: int):
+    with LangdonManager() as manager:
+        technology = technologies.get_by_id(technology_id, session=manager.session)
+
+        return TechnologyDetail.from_technology_model(
+            technology=technology,
+        ).model_dump_json()
 
 
 @app.route("/api/promissingfindings")

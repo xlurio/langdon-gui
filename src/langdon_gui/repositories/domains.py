@@ -13,7 +13,14 @@ if TYPE_CHECKING:
 __all__ = ("count", "list_promissing_domains")
 
 
-PROMISSING_DOMAIN_NAME_KEYWORDS = ("admin", "api", "ftp", "cpanel", "dashboard")
+PROMISSING_DOMAIN_NAME_KEYWORDS = (
+    "account",
+    "admin",
+    "api",
+    "cpanel",
+    "dashboard",
+    "ftp",
+)
 
 
 def count(*, session: Session) -> int:
