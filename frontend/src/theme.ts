@@ -18,6 +18,10 @@ const theme = createTheme({
       primary: "#fff",
       secondary: "#000",
     },
+    action: {
+      disabled: "rgba(255, 255, 255, 0.26)",
+      disabledBackground: "rgba(255, 255, 255, 0.12)",
+    },
   },
 });
 

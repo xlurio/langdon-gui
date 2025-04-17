@@ -14,4 +14,5 @@ export interface WebDirectory {
   ip_address: IpAddress | null;
   domain: Domain | null;
   uses_ssl: boolean;
+  screenshot: string | null;
 }

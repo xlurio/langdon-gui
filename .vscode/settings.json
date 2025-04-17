@@ -13,5 +13,6 @@
         "editor.rulers": [
             88
         ]
-    }
+    },
+    "makefile.configureOnOpen": true
 }

@@ -5,21 +5,13 @@ from typing import TYPE_CHECKING
 from langdon_core import models as langdon_models
 from sqlalchemy import func, sql
 
+from langdon_gui.constants import PROMISSING_DOMAIN_OR_CONTENT_KEYWORDS
+
 if TYPE_CHECKING:
     from sqlalchemy.engine import ScalarResult
     from sqlalchemy.orm import Session
 
 __all__ = ("count", "list_promissing_web_directories")
-
-
-PROMISSING_DIRECTORY_NAME_KEYWORDS = (
-    "account",
-    "admin",
-    "api",
-    "cpanel",
-    "dashboard",
-    "ftp",
-)
 
 
 def count(*, session: Session) -> int:
@@ -31,7 +23,7 @@ def count(*, session: Session) -> int:
 def count_promissing_web_directories(*, session: Session) -> int:
     or_clauses = [
         langdon_models.WebDirectory.path.contains(interesting_keyword)
-        for interesting_keyword in PROMISSING_DIRECTORY_NAME_KEYWORDS
+        for interesting_keyword in PROMISSING_DOMAIN_OR_CONTENT_KEYWORDS
     ]
     web_directories_query = sql.select(
         func.count(langdon_models.WebDirectory.id)
@@ -45,7 +37,7 @@ def list_promissing_web_directories(
 ) -> ScalarResult[langdon_models.WebDirectory]:
     or_clauses = [
         langdon_models.WebDirectory.path.contains(interesting_keyword)
-        for interesting_keyword in PROMISSING_DIRECTORY_NAME_KEYWORDS
+        for interesting_keyword in PROMISSING_DOMAIN_OR_CONTENT_KEYWORDS
     ]
     web_directories_query = (
         sql.select(langdon_models.WebDirectory)

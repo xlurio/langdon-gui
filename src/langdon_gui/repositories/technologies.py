@@ -32,7 +32,10 @@ def get_by_id(
         .where(langdon_models.Technology.id == technology_id)
         .options(
             orm.joinedload(langdon_models.Technology.port_relationships),
-            orm.subqueryload(langdon_models.Technology.web_directory_relationships),
+            orm.joinedload(langdon_models.Technology.web_directory_relationships),
+            orm.joinedload(
+                langdon_models.Technology.web_directory_relationships
+            ).joinedload(langdon_models.WebDirectory.screenshots),
         )
         .join(langdon_models.PortTechRel.port, isouter=True)
         .join(langdon_models.UsedPort.ip_address, isouter=True)

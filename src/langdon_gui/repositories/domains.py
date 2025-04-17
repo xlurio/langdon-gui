@@ -5,22 +5,14 @@ from typing import TYPE_CHECKING
 from langdon_core import models as langdon_models
 from sqlalchemy import func, sql, orm
 
+from langdon_gui.constants import PROMISSING_DOMAIN_OR_CONTENT_KEYWORDS
+
 if TYPE_CHECKING:
     from sqlalchemy.engine import ScalarResult
     from sqlalchemy.orm import Session
 
 
 __all__ = ("count", "list_promissing_domains")
-
-
-PROMISSING_DOMAIN_NAME_KEYWORDS = (
-    "account",
-    "admin",
-    "api",
-    "cpanel",
-    "dashboard",
-    "ftp",
-)
 
 
 def count(*, session: Session) -> int:
@@ -32,7 +24,7 @@ def count(*, session: Session) -> int:
 def count_promissing_domains(*, session: Session) -> int:
     or_clauses = [
         langdon_models.Domain.name.contains(interesting_keyword)
-        for interesting_keyword in PROMISSING_DOMAIN_NAME_KEYWORDS
+        for interesting_keyword in PROMISSING_DOMAIN_OR_CONTENT_KEYWORDS
     ]
     domains_query = sql.select(func.count(langdon_models.Domain.id)).where(
         sql.or_(*or_clauses)
@@ -49,7 +41,9 @@ def get_by_id(
         .where(langdon_models.Domain.id == domain_id)
         .options(
             orm.joinedload(langdon_models.Domain.ip_relationships),
-            orm.joinedload(langdon_models.Domain.web_directories),
+            orm.joinedload(langdon_models.Domain.web_directories).joinedload(
+                langdon_models.WebDirectory.screenshots
+            ),
         )
         .join(langdon_models.IpDomainRel.ip_address, isouter=True)
     )
@@ -65,7 +59,7 @@ def list_promissing_domains(
     )
     or_clauses = [
         langdon_models.Domain.name.contains(interesting_keyword)
-        for interesting_keyword in PROMISSING_DOMAIN_NAME_KEYWORDS
+        for interesting_keyword in PROMISSING_DOMAIN_OR_CONTENT_KEYWORDS
     ]
     domains_query = (
         sql.select(langdon_models.Domain)

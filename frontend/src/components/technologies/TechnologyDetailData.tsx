@@ -2,6 +2,8 @@ import { TechnologyResponse } from "@/adapters/technologies";
 import Card from "@/components/containers/Card";
 import { getFullUrlFromDirectory } from "@/utils/webDirectories";
 import Link from "next/link";
+import WebDirectoryActions from "../webDirectories/WebDirectoryActions";
+import WebDirectoryScreenshotProvider from "../webDirectories/WebDirectoryScreenshotProvider";
 
 interface TechnologyDetailDataProps {
   data: TechnologyResponse;
@@ -28,30 +30,32 @@ export default function TechnologyDetailData({
               </Link>
             ))}
             {data.used_ports.length === 0 && (
-              <li className="bg-background p-6 rounded-xl">
-                No ports found
-              </li>
+              <li className="bg-background p-6 rounded-xl">No ports found</li>
             )}
           </ul>
         </div>
         <div className="flex flex-col gap-4 w-full">
           <h2>Content</h2>
           <ul className="flex flex-col gap-3">
-            {data.web_directories.map((web_directory) => (
-              <Link
-                key={web_directory.id}
-                href={`/content?contentId=${web_directory.id}`}
-              >
-                <li className="bg-background p-6 rounded-xl">
+            <WebDirectoryScreenshotProvider>
+              {data.web_directories.map((web_directory) => (
+                <li
+                  key={web_directory.id}
+                  className="bg-background p-6 rounded-xl"
+                >
                   {getFullUrlFromDirectory({ web_directory })}
+                  <WebDirectoryActions
+                    webDirectoryId={web_directory.id}
+                    screenshotPath={web_directory.screenshot}
+                  />
                 </li>
-              </Link>
-            ))}
-            {data.web_directories.length === 0 && (
-              <li className="bg-background p-6 rounded-xl">
-                No content found
-              </li>
-            )}
+              ))}
+              {data.web_directories.length === 0 && (
+                <li className="bg-background p-6 rounded-xl">
+                  No content found
+                </li>
+              )}
+            </WebDirectoryScreenshotProvider>
           </ul>
         </div>
         <div className="flex flex-col gap-4 w-full">
@@ -62,7 +66,9 @@ export default function TechnologyDetailData({
                 key={vulnerability.id}
                 href={`/vulnerabilities?vulnerabilityId=${vulnerability.id}`}
               >
-                <li className="bg-background p-6 rounded-xl">{vulnerability.name}</li>
+                <li className="bg-background p-6 rounded-xl">
+                  {vulnerability.name}
+                </li>
               </Link>
             ))}
             {data.vulnerabilities.length === 0 && (

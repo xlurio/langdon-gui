@@ -12,15 +12,23 @@ class WebDirectoryItem(pydantic.BaseModel):
     id: langdon_models.WebDirectoryId
     path: str
     uses_ssl: bool
+    screenshot: str | None
 
     @classmethod
     def from_web_directory_model(
         cls, web_directory: langdon_models.WebDirectory
     ) -> Self:
+        screenshot = (
+            web_directory.screenshots[-1].screenshot_path
+            if web_directory.screenshots
+            else None
+        )
+
         return cls(
             id=web_directory.id,
             path=web_directory.path,
             uses_ssl=web_directory.uses_ssl,
+            screenshot=screenshot,
         )
 
 
