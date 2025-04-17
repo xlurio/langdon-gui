@@ -3,6 +3,7 @@ import pathlib
 import flask
 
 from langdon_core.langdon_manager import LangdonManager
+from langdon_core import models as langdon_models
 from langdon_gui.constants import PAGE_SIZE
 from langdon_gui.repositories import (
     android_apps,
@@ -14,6 +15,7 @@ from langdon_gui.repositories import (
     used_ports,
     vulnerabilities,
     web_directories,
+    web_directories_screenshots,
 )
 from langdon_gui.schemas.domain_detail import DomainDetail
 from langdon_gui.schemas.promising_findings_response import PromisingFindingsResponse
@@ -46,7 +48,7 @@ def overview():
 
 
 @app.route("/api/technologies/<int:technology_id>")
-def get_technology(technology_id: int):
+def get_technology(technology_id: langdon_models.TechnologyId):
     with LangdonManager() as manager:
         technology = technologies.get_by_id(technology_id, session=manager.session)
 
@@ -56,7 +58,7 @@ def get_technology(technology_id: int):
 
 
 @app.route("/api/domains/<int:domain_id>")
-def get_domain(domain_id: int):
+def get_domain(domain_id: langdon_models.DomainId):
     with LangdonManager() as manager:
         domain = domains.get_by_id(domain_id, session=manager.session)
 
@@ -87,3 +89,18 @@ def list_promissing_findings():
             next=next_page,
             results=serialized_objects,
         ).model_dump_json()
+
+
+@app.route("/api/webdirectories/<int:web_directory_id>/screenshot.png")
+def get_screenshot_from_dir_id(web_directory_id: langdon_models.WebDirectoryId):
+    with LangdonManager() as manager:
+        screenshot = web_directories_screenshots.get_screenshot_by_web_directory_id(
+            web_directory_id, session=manager.session
+        )
+
+        return flask.send_file(
+            screenshot.screenshot_path,
+            mimetype="image/png",
+            as_attachment=True,
+            download_name=f"{web_directory_id}.png",
+        )

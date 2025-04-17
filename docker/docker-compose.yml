@@ -5,8 +5,6 @@ services:
       dockerfile: ./docker/Dockerfile.langdongui.backend
       tags:
         - langdon_i
-    volumes:
-      - recon_volume:/recon
     networks:
       - gui_network
 
@@ -26,6 +24,3 @@ services:
 networks:
   gui_network:
     driver: bridge
-
-volumes:
-  recon_volume:

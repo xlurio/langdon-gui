@@ -11,7 +11,7 @@ if TYPE_CHECKING:
     from sqlalchemy.engine import ScalarResult
     from sqlalchemy.orm import Session
 
-__all__ = ("count", "list_promissing_web_directories")
+__all__ = ("count_promissing_web_directories", "list_promissing_web_directories")
 
 
 def count(*, session: Session) -> int:

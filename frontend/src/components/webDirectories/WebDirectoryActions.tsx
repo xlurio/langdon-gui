@@ -26,7 +26,9 @@ export default function WebDirectoryActions({
           variant="contained"
           disabled={!screenshotPath}
           onClick={() =>
-            webDirectoryScreenshotContext.setScreenshotPath(screenshotPath)
+            webDirectoryScreenshotContext.setScreenshotPath(
+              `/api/webdirectories/${webDirectoryId}/screenshot.png`
+            )
           }
         >
           <VisibilityOutlinedIcon />

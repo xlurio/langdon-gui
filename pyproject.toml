@@ -1,6 +1,6 @@
 [project]
 name = "langdon-gui"
-version = "0.1.0"
+version = "0.1.0a"
 description = "GUI to analyze the data collected by langdon"
 authors = [
     {name = "Lucas Calegario",email = "lucas.c.calegario@outlook.com"}
