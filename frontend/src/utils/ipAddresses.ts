@@ -12,8 +12,8 @@ interface MakeNetlocFromPortParams {
 
 export function makeNetlocFromPort({ port }: MakeNetlocFromPortParams) {
   if (port.ip_address.version === "ipv4") {
-    return `${port.ip_address}:${port.port}`;
+    return `${port.ip_address.address}:${port.port}`;
   }
 
-  return `[${port.ip_address}]:${port.port}`;
+  return `[${port.ip_address.address}]:${port.port}`;
 }

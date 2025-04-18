@@ -7,6 +7,7 @@ import Button from "@mui/material/Button";
 import HomeOutlinedIcon from "@mui/icons-material/HomeOutlined";
 import WebDirectoryScreenshotProvider from "./WebDirectoryScreenshotProvider";
 import { FullWebDirectoryResponse } from "@/hooks/api/useWebDirectory";
+import TechnologyList from "../technologies/TechnologyList";
 
 interface WebDirectoryDetailDataProps {
   data: FullWebDirectoryResponse;
@@ -39,27 +40,7 @@ export default function WebDirectoryDetailData({
         </div>
       </div>
       <div className="flex flex-row gap-4">
-        <div className="flex flex-col gap-4 w-full">
-          <h2>Technologies</h2>
-          <ul className="flex flex-col gap-3">
-            {data.technologies.map((technology) => (
-              <Link
-                key={technology.id}
-                href={`/technologies?technologyId=${technology.id}`}
-              >
-                <li className="bg-background p-6 rounded-xl">
-                  {technology.name}
-                  {technology.version && ` ${technology.version}`}
-                </li>
-              </Link>
-            ))}
-            {data.technologies.length === 0 && (
-              <li className="bg-background p-6 rounded-xl">
-                No technology found
-              </li>
-            )}
-          </ul>
-        </div>
+        <TechnologyList technologies={data.technologies} />
         <div className="flex flex-col gap-4 w-full">
           <h2>Headers</h2>
           <ul className="flex flex-col gap-3">

@@ -25,6 +25,7 @@ from langdon_gui.schemas.ip_address_schema import IpAddressSchema
 from langdon_gui.schemas.list_response import ListResponse
 from langdon_gui.schemas.technology_detail import TechnologyDetail
 from langdon_gui.schemas.technology_item import TechnologyItem
+from langdon_gui.schemas.used_port_detail import UsedPortDetail
 from langdon_gui.schemas.used_port_item import UsedPortItem
 from langdon_gui.schemas.web_directory_schema import (
     WebDirectorySchema,
@@ -236,9 +237,14 @@ def list_web_directories_for_ip_address(
     page = flask.request.args.get("page", 0, type=int)
 
     with LangdonManager() as manager:
-        web_directories_count = web_directories.count_by_ip_address_id(ip_address_id, session=manager.session)
+        web_directories_count = web_directories.count_by_ip_address_id(
+            ip_address_id, session=manager.session
+        )
         web_directories_list = web_directories.list_by_ip_address_id(
-            ip_address_id, session=manager.session, offset=page * PAGE_SIZE, limit=PAGE_SIZE
+            ip_address_id,
+            session=manager.session,
+            offset=page * PAGE_SIZE,
+            limit=PAGE_SIZE,
         )
         web_directories_list = [
             WebDirectorySchema.from_web_directory_model(web_directory)
@@ -250,6 +256,16 @@ def list_web_directories_for_ip_address(
             next=page + 1 if len(web_directories_list) == PAGE_SIZE else None,
             results=web_directories_list,
         ).model_dump_json()
+
+
+@app.route("/api/usedports/<int:used_port_id>")
+def get_used_port_by_id(
+    used_port_id: langdon_models.UsedPortId,
+):
+    with LangdonManager() as manager:
+        used_port = used_ports.get_by_id(used_port_id, session=manager.session)
+
+        return UsedPortDetail.from_used_port_model(used_port).model_dump_json()
 
 
 @app.route("/api/webdirectoriesscreenshots/<int:screenshot_id>/screenshot.png")
