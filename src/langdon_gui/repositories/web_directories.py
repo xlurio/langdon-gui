@@ -3,7 +3,7 @@ from __future__ import annotations
 from typing import TYPE_CHECKING
 
 from langdon_core import models as langdon_models
-from sqlalchemy import func, sql
+from sqlalchemy import func, sql, orm
 
 from langdon_gui.constants import PROMISSING_DOMAIN_OR_CONTENT_KEYWORDS
 
@@ -30,6 +30,22 @@ def count_promissing_web_directories(*, session: Session) -> int:
     ).where(sql.or_(*or_clauses))
     web_directories_count = session.execute(web_directories_query).scalar_one()
     return web_directories_count
+
+
+def get_by_id(
+    web_directory_id: langdon_models.WebDirectoryId, *, session: Session
+) -> langdon_models.WebDirectory:
+    web_directory_query = (
+        sql.select(langdon_models.WebDirectory)
+        .join(langdon_models.WebDirectory.domain, isouter=True)
+        .join(langdon_models.WebDirectory.ip_address, isouter=True)
+        .options(
+            orm.selectinload(langdon_models.WebDirectory.screenshots),
+        )
+        .where(langdon_models.WebDirectory.id == web_directory_id)
+    )
+    web_directory = session.execute(web_directory_query).scalar_one()
+    return web_directory
 
 
 def list_promissing_web_directories(

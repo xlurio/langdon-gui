@@ -1,17 +1,17 @@
 import { WebDirectory } from "@/types/api";
 
 export function getFullUrlFromDirectory({
-  web_directory,
+  webDirectory,
 }: {
-  web_directory: WebDirectory;
+  webDirectory: WebDirectory;
 }) {
-  const schema = web_directory.uses_ssl ? "https" : "http";
-  const hostname = web_directory.domain
-    ? web_directory.domain.name
-    : web_directory.ip_address!.address;
-  const path = web_directory.path.startsWith("/")
-    ? web_directory.path.slice(1)
-    : web_directory.path;
+  const schema = webDirectory.uses_ssl ? "https" : "http";
+  const hostname = webDirectory.domain
+    ? webDirectory.domain.name
+    : webDirectory.ip_address!.address;
+  const path = webDirectory.path.startsWith("/")
+    ? webDirectory.path.slice(1)
+    : webDirectory.path;
 
   return `${schema}://${hostname}/${path}`;
 }

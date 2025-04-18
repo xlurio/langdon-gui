@@ -31,18 +31,28 @@ def get_by_id(
         sql.select(langdon_models.Technology)
         .where(langdon_models.Technology.id == technology_id)
         .options(
-            orm.joinedload(langdon_models.Technology.port_relationships),
-            orm.joinedload(langdon_models.Technology.web_directory_relationships),
-            orm.joinedload(
-                langdon_models.Technology.web_directory_relationships
-            ).joinedload(langdon_models.WebDirectory.screenshots),
+            orm.selectinload(langdon_models.Technology.port_relationships)
+            .selectinload(langdon_models.PortTechRel.port)
+            .selectinload(langdon_models.UsedPort.ip_address),
+            orm.selectinload(langdon_models.Technology.web_directory_relationships)
+            .selectinload(langdon_models.WebDirTechRel.directory)
+            .selectinload(langdon_models.WebDirectory.screenshots),
         )
-        .join(langdon_models.PortTechRel.port, isouter=True)
-        .join(langdon_models.UsedPort.ip_address, isouter=True)
-        .join(langdon_models.WebDirTechRel.directory, isouter=True)
-        .join(langdon_models.WebDirectory.domain, isouter=True)
+        .join(langdon_models.WebDirectory.domain)
     )
     return session.execute(technologies_query).unique().scalar_one()
+
+
+def list_by_web_directory_id(
+    web_directory_id: langdon_models.WebDirectoryId, *, session: Session
+) -> ScalarResult[langdon_models.Technology]:
+    dir_tech_rel_query = sql.select(langdon_models.WebDirTechRel.technology_id).where(
+        langdon_models.WebDirTechRel.directory_id == web_directory_id
+    )
+    technologies_query = sql.select(langdon_models.Technology).where(
+        langdon_models.Technology.id.in_(dir_tech_rel_query)
+    )
+    return session.scalars(technologies_query)
 
 
 def list_promissing_technologies(

@@ -7,5 +7,6 @@ PROMISSING_DOMAIN_OR_CONTENT_KEYWORDS = (
     "dashboard",
     "ftp",
     "login",
+    "s3",
     "sso",
 )

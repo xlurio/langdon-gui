@@ -36,7 +36,7 @@ class WebDirectoryItem(pydantic.BaseModel):
     ip_address: IpAddressItem | None
     domain: DomainItem | None
     uses_ssl: bool
-    screenshot: str | None
+    screenshot_id: langdon_models.WebDirectoryScreenshotId | None
 
     @classmethod
     def from_web_directory_rel(
@@ -58,8 +58,8 @@ class WebDirectoryItem(pydantic.BaseModel):
             if web_directory_rel.directory.domain
             else None
         )
-        screenshot = (
-            web_directory_rel.directory.screenshots[-1].screenshot_path
+        screenshot_id = (
+            web_directory_rel.directory.screenshots[-1].id
             if web_directory_rel.directory.screenshots
             else None
         )
@@ -70,7 +70,7 @@ class WebDirectoryItem(pydantic.BaseModel):
             ip_address=ip_address,
             domain=domain,
             uses_ssl=web_directory_rel.directory.uses_ssl,
-            screenshot=screenshot,
+            screenshot_id=screenshot_id,
         )
 
 

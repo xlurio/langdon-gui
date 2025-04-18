@@ -3,7 +3,7 @@ export interface IpAddress {
   address: string;
 }
 
-interface Domain {
+export interface Domain {
   id: number;
   name: string;
 }
@@ -14,5 +14,21 @@ export interface WebDirectory {
   ip_address: IpAddress | null;
   domain: Domain | null;
   uses_ssl: boolean;
-  screenshot: string | null;
+  screenshot_id: number | null;
+}
+
+export interface Technology {
+  id: number;
+  name: string;
+  version: string | null;
+}
+
+export interface HttpHeader {
+  id: number;
+  name: string;
+}
+
+export interface HttpCookie {
+  id: number;
+  name: string;
 }

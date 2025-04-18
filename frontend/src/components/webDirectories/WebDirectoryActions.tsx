@@ -6,13 +6,14 @@ import WebDirectoryScreenshotContext from "@/contexts/WebDirectoryScreenshotCont
 import { useContext } from "react";
 
 interface WebDirectoryActionsProps {
-  webDirectoryId: number;
-  screenshotPath: string | null;
+  webDirectory: {
+    id: number;
+    screenshot_id: number | null;
+  };
 }
 
 export default function WebDirectoryActions({
-  webDirectoryId,
-  screenshotPath,
+  webDirectory,
 }: WebDirectoryActionsProps) {
   const webDirectoryScreenshotContext = useContext(
     WebDirectoryScreenshotContext
@@ -24,10 +25,10 @@ export default function WebDirectoryActions({
         <Button
           type="button"
           variant="contained"
-          disabled={!screenshotPath}
+          disabled={!webDirectory.screenshot_id}
           onClick={() =>
             webDirectoryScreenshotContext.setScreenshotPath(
-              `/api/webdirectories/${webDirectoryId}/screenshot.png`
+              `/api/webdirectoriesscreenshots/${webDirectory.screenshot_id}/screenshot.png`
             )
           }
         >
@@ -38,7 +39,7 @@ export default function WebDirectoryActions({
         <Button
           variant="contained"
           type="button"
-          href={`/content?contentId=${webDirectoryId}`}
+          href={`/content?contentId=${webDirectory.id}`}
         >
           <SubdirectoryArrowRightIcon />
         </Button>

@@ -38,15 +38,14 @@ export default function TechnologyDetailData({
           <h2>Content</h2>
           <ul className="flex flex-col gap-3">
             <WebDirectoryScreenshotProvider>
-              {data.web_directories.map((web_directory) => (
+              {data.web_directories.map((webDirectory) => (
                 <li
-                  key={web_directory.id}
+                  key={webDirectory.id}
                   className="bg-background p-6 rounded-xl"
                 >
-                  {getFullUrlFromDirectory({ web_directory })}
+                  {getFullUrlFromDirectory({ webDirectory })}
                   <WebDirectoryActions
-                    webDirectoryId={web_directory.id}
-                    screenshotPath={web_directory.screenshot}
+                    webDirectory={webDirectory}
                   />
                 </li>
               ))}

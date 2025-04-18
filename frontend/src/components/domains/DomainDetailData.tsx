@@ -7,17 +7,17 @@ import IpAddressActions from "../ipAddresses/IpAddressActions";
 
 interface GetFullUrlFromDirectoryNDomainParams {
   domain: DomainResponse;
-  web_directory: WebDirectory;
+  webDirectory: WebDirectory;
 }
 
 function getFullUrlFromDirectoryNDomain({
   domain,
-  web_directory,
+  webDirectory,
 }: GetFullUrlFromDirectoryNDomainParams) {
-  const schema = web_directory.uses_ssl ? "https" : "http";
-  const path = web_directory.path.startsWith("/")
-    ? web_directory.path.slice(1)
-    : web_directory.path;
+  const schema = webDirectory.uses_ssl ? "https" : "http";
+  const path = webDirectory.path.startsWith("/")
+    ? webDirectory.path.slice(1)
+    : webDirectory.path;
 
   return `${schema}://${domain.name}/${path}`;
 }
@@ -35,18 +35,17 @@ export default function DomainDetailData({ data }: DomainDetailDataProps) {
           <h2>Content</h2>
           <ul className="flex flex-col gap-3">
             <WebDirectoryScreenshotProvider>
-              {data.web_directories.map((web_directory) => (
+              {data.web_directories.map((webDirectory) => (
                 <li
-                  key={web_directory.id}
+                  key={webDirectory.id}
                   className="bg-background p-6 rounded-xl flex flex-row justify-between items-center"
                 >
                   {getFullUrlFromDirectoryNDomain({
                     domain: data,
-                    web_directory,
+                    webDirectory: webDirectory,
                   })}
                   <WebDirectoryActions
-                    webDirectoryId={web_directory.id}
-                    screenshotPath={web_directory.screenshot}
+                    webDirectory={webDirectory}
                   />
                 </li>
               ))}
