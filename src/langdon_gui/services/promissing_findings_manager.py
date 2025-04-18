@@ -70,37 +70,33 @@ def fetch_paginated_objects(
         "domains": domains.list_promissing_domains(
             session=manager.session,
             offset=calculate_offset(page, rates.domains),
-            limit=calculate_limit(page, rates.domains),
+            limit=PAGE_SIZE,
         ).all(),
         "technologies": technologies.list_promissing_technologies(
             session=manager.session,
             offset=calculate_offset(page, rates.technologies),
-            limit=calculate_limit(page, rates.technologies),
+            limit=PAGE_SIZE,
         ).all(),
         "used_ports": used_ports.list_promissing_used_ports(
             session=manager.session,
             offset=calculate_offset(page, rates.used_ports),
-            limit=calculate_limit(page, rates.used_ports),
+            limit=PAGE_SIZE,
         ).all(),
         "vulnerabilities": vulnerabilities.list_all(
             session=manager.session,
             offset=calculate_offset(page, rates.vulnerabilities),
-            limit=calculate_limit(page, rates.vulnerabilities),
+            limit=PAGE_SIZE,
         ).all(),
         "web_directories": web_directories.list_promissing_web_directories(
             session=manager.session,
             offset=calculate_offset(page, rates.web_directories),
-            limit=calculate_limit(page, rates.web_directories),
+            limit=PAGE_SIZE,
         ).all(),
     })
 
 
 def calculate_offset(page: int, rate: float):
     return math.floor(page * PAGE_SIZE * rate)
-
-
-def calculate_limit(page: int, rate: float):
-    return math.ceil((page + 1) * PAGE_SIZE * rate)
 
 
 def serialize_and_shuffle_objects(paginated_objects: PromissingFindingsPaginated):
@@ -115,4 +111,4 @@ def serialize_and_shuffle_objects(paginated_objects: PromissingFindingsPaginated
         PromisingFinding.from_model(obj).model_dump(mode="json") for obj in all_objects
     ]
     random.shuffle(serialized_objects)
-    return serialized_objects
+    return serialized_objects[:PAGE_SIZE]

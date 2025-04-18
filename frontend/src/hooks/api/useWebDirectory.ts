@@ -7,11 +7,10 @@ import {
 } from "@/adapters/webDirectories";
 import { ToastContext } from "@/contexts/toastContext";
 import {
-  Domain,
   HttpCookie,
   HttpHeader,
-  IpAddress,
   Technology,
+  WebDirectoryWIpNDomain,
 } from "@/types/api";
 
 interface UseWebDirectoryParams {
@@ -23,16 +22,10 @@ interface UseWebDirectoryReturn {
   webDirectory: FullWebDirectoryResponse | null;
 }
 
-export interface FullWebDirectoryResponse {
-  id: number;
-  path: string;
-  uses_ssl: boolean;
-  domain: Domain | null;
-  ip_address: IpAddress | null;
+export interface FullWebDirectoryResponse extends WebDirectoryWIpNDomain {
   technologies: Technology[];
-  http_headers: HttpHeader[];
-  http_cookies: HttpCookie[];
-  screenshot_id: number | null;
+  httpHeaders: HttpHeader[];
+  httpCookies: HttpCookie[];
 }
 
 export default function useWebDirectory({
@@ -45,7 +38,7 @@ export default function useWebDirectory({
   useEffect(() => {
     async function fetchWebDirectory() {
       try {
-        const [data, technologies, http_headers, http_cookies] = await Promise.all([
+        const [data, technologies, httpHeaders, httpCookies] = await Promise.all([
           getWebDirectoryById({ id }),
           getTechnologiesByWebDirectoryId({ id }),
           getHeadersByWebDirectoryId({ id }),
@@ -55,8 +48,8 @@ export default function useWebDirectory({
         const fullData = {
           ...data,
           technologies,
-          http_headers,
-          http_cookies,
+          httpHeaders,
+          httpCookies,
         };
 
         setWebDirectory(fullData);

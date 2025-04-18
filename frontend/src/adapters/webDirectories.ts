@@ -1,21 +1,12 @@
-import { IpAddress, Domain, Technology, HttpHeader, HttpCookie } from "@/types/api";
+import { Technology, HttpHeader, HttpCookie, WebDirectoryWIpNDomain } from "@/types/api";
 
 interface GetByWebDirectoryIdParams {
   id: number;
 }
 
-export interface WebDirectoryResponse {
-  id: number;
-  path: string;
-  uses_ssl: boolean;
-  domain: Domain | null;
-  ip_address: IpAddress | null;
-  screenshot_id: number | null;
-}
-
 export async function getWebDirectoryById({
   id,
-}: GetByWebDirectoryIdParams): Promise<WebDirectoryResponse> {
+}: GetByWebDirectoryIdParams): Promise<WebDirectoryWIpNDomain> {
   const response = await fetch(`/api/webdirectories/${id}`);
 
   return response.json();

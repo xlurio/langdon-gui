@@ -29,6 +29,7 @@ def get_by_id(
 ) -> langdon_models.Technology:
     technologies_query = (
         sql.select(langdon_models.Technology)
+        .distinct()
         .where(langdon_models.Technology.id == technology_id)
         .options(
             orm.selectinload(langdon_models.Technology.port_relationships)
@@ -49,8 +50,10 @@ def list_by_web_directory_id(
     dir_tech_rel_query = sql.select(langdon_models.WebDirTechRel.technology_id).where(
         langdon_models.WebDirTechRel.directory_id == web_directory_id
     )
-    technologies_query = sql.select(langdon_models.Technology).where(
-        langdon_models.Technology.id.in_(dir_tech_rel_query)
+    technologies_query = (
+        sql.select(langdon_models.Technology)
+        .where(langdon_models.Technology.id.in_(dir_tech_rel_query))
+        .order_by(langdon_models.Technology.name)
     )
     return session.scalars(technologies_query)
 
@@ -58,8 +61,12 @@ def list_by_web_directory_id(
 def list_promissing_technologies(
     *, session: Session, offset: int | None = None, limit: int | None = None
 ) -> ScalarResult[langdon_models.Technology]:
-    technologies_query = sql.select(langdon_models.Technology).where(
-        langdon_models.Technology.version != None  # noqa: E711
+    technologies_query = (
+        sql.select(langdon_models.Technology)
+        .where(
+            langdon_models.Technology.version != None  # noqa: E711
+        )
+        .order_by(langdon_models.Technology.id.desc())
     )
 
     if offset:

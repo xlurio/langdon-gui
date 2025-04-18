@@ -18,12 +18,18 @@ from langdon_gui.repositories import (
     web_directories_screenshots,
 )
 from langdon_gui.schemas.domain_detail import DomainDetail
+from langdon_gui.schemas.domain_item import DomainItem
 from langdon_gui.schemas.http_cookie_item import HttpCookieItem
 from langdon_gui.schemas.http_header_item import HttpHeaderItem
-from langdon_gui.schemas.promising_findings_response import PromisingFindingsResponse
+from langdon_gui.schemas.ip_address_schema import IpAddressSchema
+from langdon_gui.schemas.list_response import ListResponse
 from langdon_gui.schemas.technology_detail import TechnologyDetail
 from langdon_gui.schemas.technology_item import TechnologyItem
-from langdon_gui.schemas.web_directory_detail import WebDirectoryDetail
+from langdon_gui.schemas.used_port_item import UsedPortItem
+from langdon_gui.schemas.web_directory_schema import (
+    WebDirectorySchema,
+    WebDirectoryWDomainNIpSchema,
+)
 from langdon_gui.services import promissing_findings_manager
 from langdon_core import langdon_logging
 import logging
@@ -76,10 +82,10 @@ def list_promissing_findings():
             paginated_objects
         )
         current_page = flask.request.args.get("page", 0, type=int)
-        are_there_more_pages = (current_page * PAGE_SIZE) <= total_counts.total
+        are_there_more_pages = len(serialized_objects) == PAGE_SIZE
         next_page = current_page + 1 if are_there_more_pages else None
 
-        return PromisingFindingsResponse(
+        return ListResponse(
             count=total_counts.total,
             next=next_page,
             results=serialized_objects,
@@ -113,7 +119,9 @@ def get_web_directory(web_directory_id: langdon_models.WebDirectoryId):
             web_directory_id, session=manager.session
         )
 
-        return WebDirectoryDetail.from_web_directory_model(web_directory).model_dump_json()
+        return WebDirectoryWDomainNIpSchema.from_web_directory_model(
+            web_directory
+        ).model_dump_json()
 
 
 @app.route("/api/webdirectories/<int:web_directory_id>/technologies")
@@ -143,10 +151,12 @@ def list_http_headers_for_web_directory(
         )
 
         return [
-            HttpHeaderItem(id=http_header.id, name=http_header.name).model_dump(mode="json")
+            HttpHeaderItem(id=http_header.id, name=http_header.name).model_dump(
+                mode="json"
+            )
             for http_header in http_headers_list
         ]
-    
+
 
 @app.route("/api/webdirectories/<int:web_directory_id>/httpcookies")
 def list_http_cookies_for_web_directory(
@@ -158,9 +168,88 @@ def list_http_cookies_for_web_directory(
         )
 
         return [
-            HttpCookieItem(id=http_cookie.id, name=http_cookie.name).model_dump(mode="json")
+            HttpCookieItem(id=http_cookie.id, name=http_cookie.name).model_dump(
+                mode="json"
+            )
             for http_cookie in http_cookies_list
         ]
+
+
+@app.route("/api/ipaddresses/<int:ip_address_id>")
+def get_ip_address_by_id(
+    ip_address_id: langdon_models.IpAddressId,
+):
+    with LangdonManager() as manager:
+        ip_address = ip_addresses.get_by_id(ip_address_id, session=manager.session)
+
+        return IpAddressSchema(
+            id=ip_address.id, address=ip_address.address, version=ip_address.version
+        ).model_dump_json()
+
+
+@app.route("/api/ipaddresses/<int:ip_address_id>/domains")
+def list_domains_for_ip_address(
+    ip_address_id: langdon_models.IpAddressId,
+):
+    page = flask.request.args.get("page", 0, type=int)
+
+    with LangdonManager() as manager:
+        domains_count = domains.count_by_ip_address_id(
+            ip_address_id, session=manager.session
+        )
+        domains_list = domains.list_by_ip_address_id(
+            ip_address_id,
+            session=manager.session,
+            offset=page * PAGE_SIZE,
+            limit=PAGE_SIZE,
+        )
+        serialized_domains = [
+            DomainItem(id=domain.id, name=domain.name) for domain in domains_list
+        ]
+
+        return ListResponse(
+            count=domains_count,
+            next=page + 1 if len(serialized_domains) == PAGE_SIZE else None,
+            results=serialized_domains,
+        ).model_dump_json()
+
+
+@app.route("/api/ipaddresses/<int:ip_address_id>/usedports")
+def list_used_ports_for_ip_address(
+    ip_address_id: langdon_models.IpAddressId,
+):
+    with LangdonManager() as manager:
+        used_ports_list = used_ports.list_by_ip_address_id(
+            ip_address_id, session=manager.session
+        )
+
+        return [
+            UsedPortItem(id=used_port.id, port=used_port.port).model_dump(mode="json")
+            for used_port in used_ports_list
+        ]
+
+
+@app.route("/api/ipaddresses/<int:ip_address_id>/webdirectories")
+def list_web_directories_for_ip_address(
+    ip_address_id: langdon_models.IpAddressId,
+):
+    page = flask.request.args.get("page", 0, type=int)
+
+    with LangdonManager() as manager:
+        web_directories_count = web_directories.count_by_ip_address_id(ip_address_id, session=manager.session)
+        web_directories_list = web_directories.list_by_ip_address_id(
+            ip_address_id, session=manager.session, offset=page * PAGE_SIZE, limit=PAGE_SIZE
+        )
+        web_directories_list = [
+            WebDirectorySchema.from_web_directory_model(web_directory)
+            for web_directory in web_directories_list
+        ]
+
+        return ListResponse(
+            count=web_directories_count,
+            next=page + 1 if len(web_directories_list) == PAGE_SIZE else None,
+            results=web_directories_list,
+        ).model_dump_json()
 
 
 @app.route("/api/webdirectoriesscreenshots/<int:screenshot_id>/screenshot.png")

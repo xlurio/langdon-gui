@@ -23,8 +23,9 @@ def list_by_web_directory_id(
     dir_cookie_rel_query = sql.select(langdon_models.DirCookieRel.cookie_id).where(
         langdon_models.DirCookieRel.directory_id == web_directory_id
     )
-    cookies_query = sql.select(langdon_models.HttpCookie).where(
-        langdon_models.HttpCookie.id.in_(dir_cookie_rel_query)
+    cookies_query = (
+        sql.select(langdon_models.HttpCookie)
+        .where(langdon_models.HttpCookie.id.in_(dir_cookie_rel_query))
+        .order_by(langdon_models.HttpCookie.name)
     )
     return session.scalars(cookies_query)
-

@@ -3,19 +3,34 @@ import pydantic
 from langdon_core import models as langdon_models
 
 from langdon_gui.schemas.domain_item import DomainItem
-from langdon_gui.schemas.ip_address_item import IpAddressItem
+from langdon_gui.schemas.ip_address_schema import IpAddressSchema
 
 
-__all__ = ("WebDirectoryDetail",)
-
-
-class WebDirectoryDetail(pydantic.BaseModel):
+class WebDirectorySchema(pydantic.BaseModel):
     id: langdon_models.WebDirectoryId
     path: str
-    domain: DomainItem | None
-    ip_address: IpAddressItem | None
     uses_ssl: bool
     screenshot_id: langdon_models.WebDirectoryScreenshotId | None
+
+    @classmethod
+    def from_web_directory_model(
+        cls, web_directory: langdon_models.WebDirectory
+    ) -> Self:
+        screenshot_id = (
+            web_directory.screenshots[-1].id if web_directory.screenshots else None
+        )
+
+        return cls(
+            id=web_directory.id,
+            path=web_directory.path,
+            uses_ssl=web_directory.uses_ssl,
+            screenshot_id=screenshot_id,
+        )
+
+
+class WebDirectoryWDomainNIpSchema(WebDirectorySchema):
+    domain: DomainItem | None
+    ip_address: IpAddressSchema | None
 
     @classmethod
     def from_web_directory_model(
@@ -30,9 +45,10 @@ class WebDirectoryDetail(pydantic.BaseModel):
             if web_directory.domain
             else None,
             uses_ssl=web_directory.uses_ssl,
-            ip_address=IpAddressItem(
+            ip_address=IpAddressSchema(
                 id=web_directory.ip_id,
                 address=web_directory.ip_address.address,
+                version=web_directory.ip_address.version,
             )
             if web_directory.ip_address
             else None,

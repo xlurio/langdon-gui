@@ -1,7 +1,7 @@
 import pydantic
 
 
-class PromisingFindingsResponse(pydantic.BaseModel):
+class ListResponse(pydantic.BaseModel):
     count: int
     next: int | None
     results: list

@@ -27,7 +27,7 @@ export default function WebDirectoryDetailData({
               href={
                 data.domain
                   ? `/domains?domainId=${data.domain.id}`
-                  : `/ports?ipAddressId=${data.ip_address?.id}`
+                  : `/ipAddresses?ipAddressId=${data.ip_address?.id}`
               }
             >
               <HomeOutlinedIcon />
@@ -63,7 +63,7 @@ export default function WebDirectoryDetailData({
         <div className="flex flex-col gap-4 w-full">
           <h2>Headers</h2>
           <ul className="flex flex-col gap-3">
-            {data.http_headers.map((httpHeader) => (
+            {data.httpHeaders.map((httpHeader) => (
               <Link
                 key={httpHeader.id}
                 href={`/headers?httpHeaderId=${httpHeader.id}`}
@@ -73,7 +73,7 @@ export default function WebDirectoryDetailData({
                 </li>
               </Link>
             ))}
-            {data.http_headers.length === 0 && (
+            {data.httpHeaders.length === 0 && (
               <li className="bg-background p-6 rounded-xl">No header found</li>
             )}
           </ul>
@@ -81,7 +81,7 @@ export default function WebDirectoryDetailData({
         <div className="flex flex-col gap-4 w-full">
           <h2>Cookies</h2>
           <ul className="flex flex-col gap-3">
-            {data.http_cookies.map((httpCookie) => (
+            {data.httpCookies.map((httpCookie) => (
               <Link
                 key={httpCookie.id}
                 href={`/cookies?httpCookieId=${httpCookie.id}`}
@@ -91,7 +91,7 @@ export default function WebDirectoryDetailData({
                 </li>
               </Link>
             ))}
-            {data.http_cookies.length === 0 && (
+            {data.httpCookies.length === 0 && (
               <li className="bg-background p-6 rounded-xl">No cookie found</li>
             )}
           </ul>

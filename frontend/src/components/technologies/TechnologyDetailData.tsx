@@ -2,8 +2,10 @@ import { TechnologyResponse } from "@/adapters/technologies";
 import Card from "@/components/containers/Card";
 import { getFullUrlFromDirectory } from "@/utils/webDirectories";
 import Link from "next/link";
-import WebDirectoryActions from "../webDirectories/WebDirectoryActions";
-import WebDirectoryScreenshotProvider from "../webDirectories/WebDirectoryScreenshotProvider";
+import { makeNetlocFromPort } from "@/utils/ipAddresses";
+import WebDirectoryList from "../webDirectories/WebDirectoryList";
+import WebDirectoryListItem from "../webDirectories/WebDirectoryListItem";
+import { WebDirectoryWIpNDomain } from "@/types/api";
 
 interface TechnologyDetailDataProps {
   data: TechnologyResponse;
@@ -25,7 +27,7 @@ export default function TechnologyDetailData({
             {data.used_ports.map((used_port) => (
               <Link key={used_port.id} href={`/ports?portId=${used_port.id}`}>
                 <li className="bg-background p-6 rounded-xl">
-                  {used_port.ip_address.address}:{used_port.port}
+                  {makeNetlocFromPort({ port: used_port })}
                 </li>
               </Link>
             ))}
@@ -34,29 +36,18 @@ export default function TechnologyDetailData({
             )}
           </ul>
         </div>
-        <div className="flex flex-col gap-4 w-full">
-          <h2>Content</h2>
-          <ul className="flex flex-col gap-3">
-            <WebDirectoryScreenshotProvider>
-              {data.web_directories.map((webDirectory) => (
-                <li
-                  key={webDirectory.id}
-                  className="bg-background p-6 rounded-xl"
-                >
-                  {getFullUrlFromDirectory({ webDirectory })}
-                  <WebDirectoryActions
-                    webDirectory={webDirectory}
-                  />
-                </li>
-              ))}
-              {data.web_directories.length === 0 && (
-                <li className="bg-background p-6 rounded-xl">
-                  No content found
-                </li>
-              )}
-            </WebDirectoryScreenshotProvider>
-          </ul>
-        </div>
+        <WebDirectoryList
+          webDirectories={data.web_directories}
+          renderItem={(webDirectory) => (
+            <WebDirectoryListItem
+              key={webDirectory.id}
+              url={getFullUrlFromDirectory({
+                webDirectory: webDirectory as WebDirectoryWIpNDomain,
+              })}
+              webDirectory={webDirectory}
+            />
+          )}
+        />
         <div className="flex flex-col gap-4 w-full">
           <h2>Vulnerabilities</h2>
           <ul className="flex flex-col gap-3">

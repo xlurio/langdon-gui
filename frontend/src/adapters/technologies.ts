@@ -1,14 +1,10 @@
-import { IpAddress, WebDirectory } from "@/types/api";
+import { UsedPortWIpAddress, WebDirectoryWIpNDomain } from "@/types/api";
 
 interface GetTechnologyByIdParams {
   id: number;
 }
 
-interface UsedPort {
-  id: number;
-  port: number;
-  ip_address: IpAddress;
-}
+
 
 interface Vulnerability {
   id: number;
@@ -19,8 +15,8 @@ export interface TechnologyResponse {
   id: number;
   name: string;
   version: string;
-  used_ports: UsedPort[];
-  web_directories: WebDirectory[];
+  used_ports: UsedPortWIpAddress[];
+  web_directories: WebDirectoryWIpNDomain[];
   vulnerabilities: Vulnerability[];
 }
 

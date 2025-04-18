@@ -2,38 +2,18 @@ from typing import Self
 import pydantic
 from langdon_core import models as langdon_models
 
-from langdon_gui.schemas.ip_address_item import IpAddressItem
+from langdon_gui.schemas.domain_item import DomainItem
+from langdon_gui.schemas.ip_address_schema import IpAddressSchema
+from langdon_gui.schemas.used_port_item import UsedPortWAddressItem
 
 
 __all__ = ("TechnologyDetail",)
 
 
-class UsedPortItem(pydantic.BaseModel):
-    id: langdon_models.UsedPortId
-    port: int
-    ip_address: IpAddressItem
-
-    @classmethod
-    def from_used_port_model(cls, used_port: langdon_models.PortTechRel) -> Self:
-        return cls(
-            id=used_port.id,
-            port=used_port.port.port,
-            ip_address=IpAddressItem(
-                id=used_port.port.ip_address.id,
-                address=used_port.port.ip_address.address,
-            ),
-        )
-
-
-class DomainItem(pydantic.BaseModel):
-    id: langdon_models.DomainId
-    name: str
-
-
 class WebDirectoryItem(pydantic.BaseModel):
     id: langdon_models.WebDirectoryId
     path: str
-    ip_address: IpAddressItem | None
+    ip_address: IpAddressSchema | None
     domain: DomainItem | None
     uses_ssl: bool
     screenshot_id: langdon_models.WebDirectoryScreenshotId | None
@@ -43,9 +23,10 @@ class WebDirectoryItem(pydantic.BaseModel):
         cls, web_directory_rel: langdon_models.WebDirTechRel
     ) -> Self:
         ip_address = (
-            IpAddressItem(
+            IpAddressSchema(
                 id=web_directory_rel.directory.ip_address.id,
                 address=web_directory_rel.directory.ip_address.address,
+                version=web_directory_rel.directory.ip_address.version,
             )
             if web_directory_rel.directory.ip_address
             else None
@@ -83,7 +64,7 @@ class TechnologyDetail(pydantic.BaseModel):
     id: langdon_models.TechnologyId
     name: str
     version: str
-    used_ports: list[UsedPortItem]
+    used_ports: list[UsedPortWAddressItem]
     web_directories: list[WebDirectoryItem]
     vulnerabilities: list[VulnerabilityItem]
 
@@ -109,9 +90,9 @@ class UsedPortItemFactory:
     @staticmethod
     def create_from_port_relationships(
         port_relationships: list[langdon_models.PortTechRel],
-    ) -> list[UsedPortItem]:
+    ) -> list[UsedPortWAddressItem]:
         return [
-            UsedPortItem.from_used_port_model(port_rel)
+            UsedPortWAddressItem.from_used_port_model(port_rel)
             for port_rel in port_relationships
         ]
 

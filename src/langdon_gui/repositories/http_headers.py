@@ -23,7 +23,9 @@ def list_by_web_directory_id(
     dir_header_rel_query = sql.select(langdon_models.DirHeaderRel.header_id).where(
         langdon_models.DirHeaderRel.directory_id == web_directory_id
     )
-    headers_query = sql.select(langdon_models.HttpHeader).where(
-        langdon_models.HttpHeader.id.in_(dir_header_rel_query)
+    headers_query = (
+        sql.select(langdon_models.HttpHeader)
+        .where(langdon_models.HttpHeader.id.in_(dir_header_rel_query))
+        .order_by(langdon_models.HttpHeader.name)
     )
     return session.scalars(headers_query)

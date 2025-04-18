@@ -27,7 +27,7 @@ export default function IpAddressActions({ ipAddress }: IpAddressActionsProps) {
         <Button
           variant="contained"
           type="button"
-          href={`/ports?ipAddressId=${ipAddress.id}`}
+          href={`/ipaddresses?ipAddressId=${ipAddress.id}`}
         >
           <SubdirectoryArrowRightIcon />
         </Button>

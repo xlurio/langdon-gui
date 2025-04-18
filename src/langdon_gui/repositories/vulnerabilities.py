@@ -19,7 +19,9 @@ def count(*, session: Session) -> int:
 def list_all(
     *, session: Session, offset: int | None = None, limit: int | None = None
 ) -> ScalarResult[langdon_models.Vulnerability]:
-    vulnerabilities_query = sql.select(langdon_models.Vulnerability)
+    vulnerabilities_query = sql.select(langdon_models.Vulnerability).order_by(
+        langdon_models.Vulnerability.name
+    )
 
     if offset:
         vulnerabilities_query = vulnerabilities_query.offset(offset)

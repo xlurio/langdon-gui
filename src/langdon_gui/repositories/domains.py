@@ -38,6 +38,7 @@ def get_by_id(
 ) -> langdon_models.Domain | None:
     domain_query = (
         sql.select(langdon_models.Domain)
+        .distinct()
         .where(langdon_models.Domain.id == domain_id)
         .options(
             orm.joinedload(langdon_models.Domain.ip_relationships),
@@ -65,6 +66,41 @@ def list_promissing_domains(
         sql.select(langdon_models.Domain)
         .where(sql.or_(*or_clauses))
         .where(langdon_models.Domain.id.in_(ip_rel_query))
+        .order_by(langdon_models.Domain.id.desc())
+    )
+
+    if offset:
+        domains_query = domains_query.offset(offset)
+    if limit:
+        domains_query = domains_query.limit(limit)
+
+    return session.scalars(domains_query)
+
+
+def count_by_ip_address_id(
+    ip_address_id: langdon_models.IpAddressId, *, session: Session
+) -> int:
+    domains_query = (
+        sql.select(func.count(langdon_models.Domain.id))
+        .where(langdon_models.IpDomainRel.ip_id == ip_address_id)
+        .order_by(langdon_models.Domain.name)
+    )
+    return session.execute(domains_query).scalar_one()
+
+
+def list_by_ip_address_id(
+    ip_address_id: langdon_models.IpAddressId,
+    *,
+    session: Session,
+    offset: int | None = None,
+    limit: int | None = None,
+) -> ScalarResult[langdon_models.Domain]:
+    domains_query = (
+        sql.select(langdon_models.Domain)
+        .distinct()
+        .options(orm.selectinload(langdon_models.Domain.ip_relationships))
+        .where(langdon_models.IpDomainRel.ip_id == ip_address_id)
+        .order_by(langdon_models.Domain.name)
     )
 
     if offset:

@@ -1,9 +1,9 @@
-import { WebDirectory } from "@/types/api";
+import { WebDirectoryWIpNDomain } from "@/types/api";
 
 export function getFullUrlFromDirectory({
   webDirectory,
 }: {
-  webDirectory: WebDirectory;
+  webDirectory: WebDirectoryWIpNDomain;
 }) {
   const schema = webDirectory.uses_ssl ? "https" : "http";
   const hostname = webDirectory.domain
