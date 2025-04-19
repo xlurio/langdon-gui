@@ -42,10 +42,9 @@ def get_by_id(
         .where(langdon_models.Domain.id == domain_id)
         .options(
             orm.joinedload(langdon_models.Domain.ip_relationships),
-            orm.joinedload(langdon_models.Domain.web_directories).joinedload(
-                langdon_models.WebDirectory.screenshots
-            ),
+            orm.joinedload(langdon_models.Domain.web_directories),
         )
+        .join(langdon_models.WebDirectory.screenshot, isouter=True)
         .join(langdon_models.IpDomainRel.ip_address, isouter=True)
     )
     return session.execute(domain_query).unique().scalar_one()
@@ -95,11 +94,13 @@ def list_by_ip_address_id(
     offset: int | None = None,
     limit: int | None = None,
 ) -> ScalarResult[langdon_models.Domain]:
+    domain_rels_query = sql.select(langdon_models.IpDomainRel.domain_id).where(
+        langdon_models.IpDomainRel.ip_id == ip_address_id
+    )
     domains_query = (
         sql.select(langdon_models.Domain)
         .distinct()
-        .options(orm.selectinload(langdon_models.Domain.ip_relationships))
-        .where(langdon_models.IpDomainRel.ip_id == ip_address_id)
+        .where(langdon_models.Domain.id.in_(domain_rels_query))
         .order_by(langdon_models.Domain.name)
     )
 

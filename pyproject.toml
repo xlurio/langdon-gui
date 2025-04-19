@@ -9,10 +9,10 @@ license = {text = "LICENSE"}
 readme = "README.md"
 requires-python = ">=3.12"
 dependencies = [
-    "langdon-core @ git+https://github.com/xlurio/langdon-core.git",
     "flask (>=3.1.0,<3.2.0)",
     "gunicorn (>=23.0.0,<24.0.0)",
-    "pydantic (>=2.11.3,<3.0.0)"
+    "pydantic (>=2.11.3,<3.0.0)",
+    "langdon-core @ git+https://github.com/xlurio/langdon-core.git"
 ]
 
 [tool.poetry]

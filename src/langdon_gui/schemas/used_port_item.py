@@ -14,12 +14,15 @@ class UsedPortWAddressItem(UsedPortItem):
     ip_address: IpAddressSchema
 
     @classmethod
-    def from_used_port_model(cls, used_port: langdon_models.PortTechRel) -> Self:
+    def from_used_port_rel_model(
+        cls, used_port_rel: langdon_models.PortTechRel
+    ) -> Self:
         return cls(
-            id=used_port.id,
-            port=used_port.port.port,
+            id=used_port_rel.port_id,
+            port=used_port_rel.port.port,
             ip_address=IpAddressSchema(
-                id=used_port.port.ip_address.id,
-                address=used_port.port.ip_address.address,
+                id=used_port_rel.port.ip_address.id,
+                address=used_port_rel.port.ip_address.address,
+                version=used_port_rel.port.ip_address.version,
             ),
         )

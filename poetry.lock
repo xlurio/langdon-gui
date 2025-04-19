@@ -214,7 +214,7 @@ sqlalchemy = ">=2.0.39,<2.1.0"
 type = "git"
 url = "https://github.com/xlurio/langdon-core.git"
 reference = "HEAD"
-resolved_reference = "c929fb0bc9977ebb4f09978977fffe2c97092c54"
+resolved_reference = "e01f3d28a45563e182977a3b993c2fe0167ecaee"
 
 [[package]]
 name = "markupsafe"
@@ -605,4 +605,4 @@ watchdog = ["watchdog (>=2.3)"]
 [metadata]
 lock-version = "2.1"
 python-versions = ">=3.12"
-content-hash = "b6e839d4b777fcb4153b2c8792a9e405cd8d524c3737f0eb15e51713474dd781"
+content-hash = "160c118db8683a3d35093169ab2e41c2bbcdc46318606f7381b1dd74ff439a80"

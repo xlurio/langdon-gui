@@ -17,7 +17,7 @@ class WebDirectorySchema(pydantic.BaseModel):
         cls, web_directory: langdon_models.WebDirectory
     ) -> Self:
         screenshot_id = (
-            web_directory.screenshots[-1].id if web_directory.screenshots else None
+            web_directory.screenshot.id if web_directory.screenshot else None
         )
 
         return cls(
@@ -52,7 +52,7 @@ class WebDirectoryWDomainNIpSchema(WebDirectorySchema):
             )
             if web_directory.ip_address
             else None,
-            screenshot_id=web_directory.screenshots[-1].id
-            if web_directory.screenshots
+            screenshot_id=web_directory.screenshot.id
+            if web_directory.screenshot
             else None,
         )

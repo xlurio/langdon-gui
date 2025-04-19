@@ -3,7 +3,7 @@ from __future__ import annotations
 from typing import TYPE_CHECKING
 
 from langdon_core import models as langdon_models
-from sqlalchemy import func, sql, orm
+from sqlalchemy import func, sql
 
 from langdon_gui.constants import PROMISSING_DOMAIN_OR_CONTENT_KEYWORDS
 
@@ -40,9 +40,7 @@ def get_by_id(
         .distinct()
         .join(langdon_models.WebDirectory.domain, isouter=True)
         .join(langdon_models.WebDirectory.ip_address, isouter=True)
-        .options(
-            orm.selectinload(langdon_models.WebDirectory.screenshots),
-        )
+        .join(langdon_models.WebDirectory.screenshot, isouter=True)
         .where(langdon_models.WebDirectory.id == web_directory_id)
     )
     web_directory = session.execute(web_directory_query).scalar_one()

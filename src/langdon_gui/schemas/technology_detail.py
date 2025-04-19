@@ -40,8 +40,8 @@ class WebDirectoryItem(pydantic.BaseModel):
             else None
         )
         screenshot_id = (
-            web_directory_rel.directory.screenshots[-1].id
-            if web_directory_rel.directory.screenshots
+            web_directory_rel.directory.screenshot.id
+            if web_directory_rel.directory.screenshot
             else None
         )
 
@@ -63,7 +63,7 @@ class VulnerabilityItem(pydantic.BaseModel):
 class TechnologyDetail(pydantic.BaseModel):
     id: langdon_models.TechnologyId
     name: str
-    version: str
+    version: str | None
     used_ports: list[UsedPortWAddressItem]
     web_directories: list[WebDirectoryItem]
     vulnerabilities: list[VulnerabilityItem]
@@ -92,7 +92,7 @@ class UsedPortItemFactory:
         port_relationships: list[langdon_models.PortTechRel],
     ) -> list[UsedPortWAddressItem]:
         return [
-            UsedPortWAddressItem.from_used_port_model(port_rel)
+            UsedPortWAddressItem.from_used_port_rel_model(port_rel)
             for port_rel in port_relationships
         ]
 

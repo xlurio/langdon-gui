@@ -17,7 +17,7 @@ services:
     depends_on:
       - langdonguibe
     ports:
-      - "8080:80"
+      - "8989:80"
     networks:
       - gui_network
 

@@ -28,7 +28,7 @@ export default function WebDirectoryDetailData({
               href={
                 data.domain
                   ? `/domains?domainId=${data.domain.id}`
-                  : `/ipAddresses?ipAddressId=${data.ip_address?.id}`
+                  : `/ipaddresses?ipAddressId=${data.ip_address?.id}`
               }
             >
               <HomeOutlinedIcon />

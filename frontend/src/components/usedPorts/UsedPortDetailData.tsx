@@ -19,7 +19,7 @@ export default function UsedPortDetailData({ data }: UsedPortDetailDataProps) {
           <Button
             type="button"
             variant="contained"
-            href={`/ipAddresses?ipAddressId=${data.ip_address.id}`}
+            href={`/ipaddresses?ipAddressId=${data.ip_address.id}`}
           >
             <HomeOutlinedIcon />
           </Button>

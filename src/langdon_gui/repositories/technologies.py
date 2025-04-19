@@ -35,11 +35,12 @@ def get_by_id(
             orm.selectinload(langdon_models.Technology.port_relationships)
             .selectinload(langdon_models.PortTechRel.port)
             .selectinload(langdon_models.UsedPort.ip_address),
-            orm.selectinload(langdon_models.Technology.web_directory_relationships)
-            .selectinload(langdon_models.WebDirTechRel.directory)
-            .selectinload(langdon_models.WebDirectory.screenshots),
+            orm.selectinload(
+                langdon_models.Technology.web_directory_relationships
+            ).selectinload(langdon_models.WebDirTechRel.directory),
         )
-        .join(langdon_models.WebDirectory.domain)
+        .join(langdon_models.WebDirectory.screenshot, isouter=True)
+        .join(langdon_models.WebDirectory.domain, isouter=True)
     )
     return session.execute(technologies_query).unique().scalar_one()
 
